@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus } from "lucide-react";
 import EditableTable from "./editable-table";
 import SafeNotePopup from "./safe-note-popup";
-import Papa from "papaparse";
 
 export default function SafeNotes() {
     const { safeNotes, updateSafeNotes } = useCalculation();
@@ -61,59 +60,11 @@ export default function SafeNotes() {
         updateSafeNotes(safeNotes.filter((safe) => safe.id !== id));
     };
 
-     const handleImportCsv = (event: React.ChangeEvent<HTMLInputElement>) => {
-         const file = event.target.files?.[0];
-
-         if (file) {
-             Papa.parse(file, {
-                 complete: (result) => {
-                     const csvData = result.data;
-                     // Validate the column headers
-                     const headers = csvData[0];
-                     const requiredHeaders = ["name", "principal", "valuationCap", "type", "discount"];
-
-                     const isValid = requiredHeaders.every((header, index) => header === headers[index]);
-                     if (!isValid) {
-                         alert("Invalid CSV format. Please ensure the CSV file matches the required columns.");
-                         return;
-                     }
-
-                     // Parse CSV data into SafeNote objects
-                     const importedSafeNotes = csvData.slice(1).map((row) => {
-                         return {
-                             name: row[0],
-                             principal: parseFloat(row[1]),
-                             valuationCap: parseFloat(row[2]),
-                             type: row[3].toLowerCase() as "pre-money" | "post-money", // Ensures lowercase
-                             discount: parseFloat(row[4]),
-                             shares: 0, // You can calculate shares if needed
-                         };
-                     });
-
-                     updateSafeNotes([...safeNotes, ...importedSafeNotes]);
-                     alert("CSV file imported successfully.");
-                 },
-                 header: false,
-                 skipEmptyLines: true,
-             });
-         }
-     };
-
     return (
         <Card>
             <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>SAFE Notes</CardTitle>
                 <div className="flex gap-2">
-                    {/* <Button size="sm" className="bg-gray-200 text-black hover:bg-gray-300">
-                        <Plus className="mr-2 h-4 w-4" />
-                        Import from CSV
-                        <input
-                            type="file"
-                            accept=".csv"
-                            onChange={handleImportCsv}
-                            className="hidden" // Hide the actual file input
-                        />
-                    </Button> */}
                     <Button onClick={handleAdd} size="sm">
                         <Plus className="mr-2 h-4 w-4" />
                         Add SAFE

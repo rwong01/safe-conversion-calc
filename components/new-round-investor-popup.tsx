@@ -15,6 +15,7 @@ interface NewRoundInvestorPopupProps {
 export default function NewRoundInvestorPopup({ investor, onSave, onCancel }: NewRoundInvestorPopupProps) {
     const [editedInvestor, setEditedInvestor] = useState(
         investor || {
+            id: "",
             name: "",
             principal: 0,
             shares: 0,

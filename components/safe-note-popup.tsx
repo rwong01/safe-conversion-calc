@@ -17,11 +17,13 @@ interface SafeNotePopupProps {
 export default function SafeNotePopup({ safe, onSave, onCancel }: SafeNotePopupProps) {
     const [editedSafe, setEditedSafe] = useState(
         safe || {
+            id: "",
             name: "",
             principal: 0,
             valuationCap: 0,
-            type: "Post-Money",
+            type: "Post-Money" as "Post-Money" | "Pre-Money",
             discount: 100,
+            shares: 0,
         }
     );
 
