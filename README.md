@@ -1,36 +1,106 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SAFE Conversion Calculator
 
-## Getting Started
+SAFE Conversion Calculator is a web app designed to help founders and investors understand how their SAFE notes convert to equity in a priced round. As a former founder, I was surprised by the lack of transparency and understanding about how the mechanics of this process work and how complex the conversion process can be given the lack of a closed form solution.
 
-First, run the development server:
+## Table of Contents
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Technologies Used](#technologies-used)
+- [Contributing](#contributing)
+- [License](#license)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Pre-Money and Post-Money SAFE Conversion**: Supports both Pre-Money and Post-Money SAFE conversion or a mix of both.
+- **Configurable ESOP**: Allows users to see how changing the size of their ESOP affects their conversion.
+- **Responsive Design**: Ensures optimal viewing on various devices.
+- **Import/Export**: Import and export investor data from a CSV file.
+- **Results Table & Charts**: View the results of the conversion in a table and pie chart.
+- **Explainer with Mathematical Expressions**: Provides an explanation of the conversion process complete with formulas and LaTeX notation.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Installation
 
-## Learn More
+To set up the project locally:
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the repository**:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   ```bash
+   git clone https://github.com/rwong01/safe-conversion-calc.git
+   cd safe-conversion-calc
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Install dependencies**:
 
-## Deploy on Vercel
+   ```bash
+   npm install
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   or
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   yarn install
+   ```
+
+3. **Start the development server**:
+
+   ```bash
+   npm run dev
+   ```
+
+   or
+
+   ```bash
+   yarn dev
+   ```
+
+   The application will be accessible at `http://localhost:3000`.
+
+## Usage
+
+After starting the development server:
+
+- Navigate to `http://localhost:3000` in your browser.
+- Input the current round details, outstanding SAFEs, and future round details.
+- View the results in the table and pie chart.
+- Utilize the explainer to understand the conversion process.
+
+## Technologies Used
+
+- **Next.js**: Framework for server-rendered React applications.
+- **React**: JavaScript library for building user interfaces.
+- **Tailwind CSS**: Utility-first CSS framework for styling.
+- **Radix UI**: Accessible React components for building high-quality interfaces.
+- **Chart.js**: JavaScript library for data visualization.
+- **KaTeX**: Fast math typesetting library.
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch:
+
+   ```bash
+   git checkout -b feature-name
+   ```
+
+3. Make your changes.
+4. Commit your changes:
+
+   ```bash
+   git commit -m 'Add feature'
+   ```
+
+5. Push to the branch:
+
+   ```bash
+   git push origin feature-name
+   ```
+
+6. Open a pull request detailing your changes.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
