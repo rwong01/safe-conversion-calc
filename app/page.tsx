@@ -4,6 +4,7 @@ import CapTable from "@/components/cap-table"
 import SafeNotes from "@/components/safe-notes"
 import NewRound from "@/components/new-round"
 import Results from "@/components/results"
+import SafeConversionExplainer from "@/components/explainer"
 import { CalculationProvider } from "@/context/calculation-context"
 import { useEffect, useState } from "react"
 
@@ -41,11 +42,12 @@ export default function CalculatorPage() {
         <CalculationProvider>
           <div className={`transition-opacity duration-200 ${isHydrated ? 'opacity-100' : 'opacity-0'}`}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-5">
                 <TabsTrigger value="cap-table">Current Cap Table</TabsTrigger>
                 <TabsTrigger value="safe-notes">SAFE Notes</TabsTrigger>
                 <TabsTrigger value="new-round">New Priced Round</TabsTrigger>
                 <TabsTrigger value="results">Results</TabsTrigger>
+                <TabsTrigger value="explainer">Explainer</TabsTrigger>
               </TabsList>
               <TabsContent value="cap-table">
                 <CapTable />
@@ -58,6 +60,9 @@ export default function CalculatorPage() {
               </TabsContent>
               <TabsContent value="results">
                 <Results />
+              </TabsContent>
+              <TabsContent value="explainer">
+                <SafeConversionExplainer />
               </TabsContent>
             </Tabs>
           </div>
