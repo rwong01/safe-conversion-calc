@@ -4,10 +4,29 @@ import { useCalculation } from "@/context/calculation-context";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import * as XLSX from "xlsx";
+import { Pie } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Download } from "lucide-react";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+// Generate visually distinct colors for any number of sections using golden ratio
+const generateColors = (count: number) => {
+    const goldenRatio = 0.618033988749895;
+    let hue = 0.15 ;
+    
+    const colors = Array.from({ length: count }, (_, i) => {
+        hue = (hue + goldenRatio) % 1;
+        const saturation = 65 + (i % 2) * 10; // Alternate between 65% and 75%
+        const lightness = 55 + (i % 2) * 10;  // Alternate between 55% and 65%
+        return `hsl(${Math.floor(hue * 360)}, ${saturation}%, ${lightness}%)`;
+    });
+
+    return colors.reverse();
+};
 
 export default function Results() {
-    const { results, capTable, safeNotes, newRound } = useCalculation();
+    const { results } = useCalculation();
     const formatCurrency = (value: number) => {
         if (value <= 0) {
             return "-";
@@ -32,68 +51,24 @@ export default function Results() {
         }).format(value);
     };
 
-    const exportToExcel = () => {
-        const workbook = XLSX.utils.book_new();
-
-        // Cap Table Sheet
-        const capTableData = [
-            ["Fully Diluted Shares", capTable.fullyDilutedShares],
-            ["Remaining Options", capTable.remainingOptions],
-            ["New Employee Pool Size", `${capTable.newPoolSize}%`],
-        ];
-        const capTableSheet = XLSX.utils.aoa_to_sheet(capTableData);
-        XLSX.utils.book_append_sheet(workbook, capTableSheet, "Cap Table");
-
-        // SAFE Notes Sheet
-        const safeNotesData = [["Name", "Principal", "Valuation Cap", "Type", "Discount", "Shares"]].concat(
-            safeNotes.map(
-                (safe) =>
-                    [
-                        safe.name,
-                        safe.principal.toString(),
-                        safe.valuationCap.toString(),
-                        safe.type,
-                        `${safe.discount}%`,
-                        safe.shares.toString(),
-                    ] as string[]
-            )
+    const handleDownloadCSV = () => {
+        const headers = ['Name,Investment Principal,Ownership %,Number of Shares'];
+        const rows = results.map(result => 
+            `${result.name},${result.principal},${result.ownership},${result.shares}`
         );
-        const safeNotesSheet = XLSX.utils.aoa_to_sheet(safeNotesData);
-        XLSX.utils.book_append_sheet(workbook, safeNotesSheet, "SAFE Notes");
-
-        // New Round Sheet
-        const newRoundData = [
-            ["Valuation", newRound.valuation.toString()],
-            ["Type", newRound.type],
-            ["Investors"],
-            ["Name", "Principal", "Shares"],
-        ].concat(
-            newRound.investors.map((inv) => [inv.name, inv.principal.toString(), inv.shares.toString()] as string[])
-        );
-        const newRoundSheet = XLSX.utils.aoa_to_sheet(newRoundData);
-        XLSX.utils.book_append_sheet(workbook, newRoundSheet, "New Round");
-
-        // Results Sheet
-        const resultsData = [["Name", "Principal", "Ownership %", "Number of Shares"]].concat(
-            results.map(
-                (result) =>
-                    [
-                        result.name,
-                        result.principal.toString(),
-                        result.ownership.toString(),
-                        result.shares.toString(),
-                    ] as string[]
-            )
-        );
-        const resultsSheet = XLSX.utils.aoa_to_sheet(resultsData);
-        XLSX.utils.book_append_sheet(workbook, resultsSheet, "Results");
-
-        // Add formulas to the Results sheet
-        resultsSheet["C2"] = { f: "D2/SUM($D$2:$D$" + (results.length + 1) + ")" };
-        XLSX.utils.sheet_add_aoa(resultsSheet, [["", "", "Ownership %", "Number of Shares"]], { origin: "A1" });
-
-        XLSX.writeFile(workbook, "SAFE_Conversion_Results.xlsx");
+        const csv = headers.concat(rows).join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'results.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
     };
+    
+
     // Calculate totals
     const totalPrincipal = results.reduce((sum, result) => sum + result.principal, 0);
     const totalOwnership = results.reduce((sum, result) => sum + result.ownership, 0);
@@ -118,7 +93,9 @@ export default function Results() {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Conversion Results</CardTitle>
-                        <Button onClick={exportToExcel}>Export to Excel</Button>
+                        <Button onClick={handleDownloadCSV} size="sm">
+                        <Download className="mr-2 h-4 w-4" />
+                        Download CSV</Button>
                     </CardHeader>
                     <CardContent>
                         <Table>
@@ -148,6 +125,43 @@ export default function Results() {
                                 </TableRow>
                             </TableBody>
                         </Table>
+                    </CardContent>
+                </Card>
+            )}
+
+            {isTotalOwnershipValid && (
+                <Card className="mt-4">
+                    <CardHeader>
+                        <CardTitle>Ownership Distribution</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex justify-center">
+                        <div style={{ width: '400px', height: '400px' }}>
+                            <Pie
+                                data={{
+                                    labels: results.map(result => result.name),
+                                    datasets: [{
+                                        data: results.map(result => result.ownership * 100),
+                                        backgroundColor: generateColors(results.length),
+                                        borderWidth: 1
+                                    }]
+                                }}
+                                options={{
+                                    plugins: {
+                                        legend: {
+                                            position: 'right' as const
+                                        },
+                                        tooltip: {
+                                            callbacks: {
+                                                title: () => '',
+                                                label: function(context) {
+                                                    return `${context.label}: ${context.parsed.toFixed(2)}%`;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }}
+                            />
+                        </div>
                     </CardContent>
                 </Card>
             )}

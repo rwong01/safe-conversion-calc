@@ -59,16 +59,40 @@ interface CalculationContextType {
 
 const CalculationContext = createContext<CalculationContextType | undefined>(undefined);
 
+const STORAGE_KEY = 'safe-calc-state';
+
+function saveToStorage(state: Partial<CalculationContextType>) {
+    if (typeof window === 'undefined') return;
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+        console.error('Failed to save state:', e);
+    }
+}
+
+function loadFromStorage(): Partial<CalculationContextType> | null {
+    if (typeof window === 'undefined') return null;
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+        console.error('Failed to load state:', e);
+        return null;
+    }
+}
+
 export function CalculationProvider({ children }: { children: React.ReactNode }) {
-    const [capTable, setCapTable] = useState<CapTable>({
+    const savedState = loadFromStorage();
+    
+    const [capTable, setCapTable] = useState<CapTable>(savedState?.capTable ?? {
         fullyDilutedShares: 5000000,
         remainingOptions: 500000,
         newPoolSize: 10,
     });
 
-    const [safeNotes, setSafeNotes] = useState<SafeNote[]>([]);
+    const [safeNotes, setSafeNotes] = useState<SafeNote[]>(savedState?.safeNotes ?? []);
 
-    const [newRound, setNewRound] = useState<NewRound>({
+    const [newRound, setNewRound] = useState<NewRound>(savedState?.newRound ?? {
         valuation: 0,
         type: "Pre-Money",
         investors: [],
@@ -77,8 +101,13 @@ export function CalculationProvider({ children }: { children: React.ReactNode })
     const [results, setResults] = useState<Result[]>([]);
 
     useEffect(() => {
-      const newResults = calculateResults(capTable, safeNotes, newRound);
+        const newResults = calculateResults(capTable, safeNotes, newRound);
         setResults(newResults);
+    }, [capTable, safeNotes, newRound]);
+
+    // Save state changes to localStorage
+    useEffect(() => {
+        saveToStorage({ capTable, safeNotes, newRound });
     }, [capTable, safeNotes, newRound]);
 
     return (
