@@ -91,7 +91,7 @@ export default function Results() {
 
             {isTotalOwnershipValid && (
                 <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
+                    <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <CardTitle>Conversion Results</CardTitle>
                         <Button onClick={handleDownloadCSV} size="sm">
                         <Download className="mr-2 h-4 w-4" />
@@ -135,7 +135,7 @@ export default function Results() {
                         <CardTitle>Ownership Distribution</CardTitle>
                     </CardHeader>
                     <CardContent className="flex justify-center">
-                        <div style={{ width: '400px', height: '400px' }}>
+                        <div className="w-full max-w-[400px] aspect-square">
                             <Pie
                                 data={{
                                     labels: results.map(result => result.name),
@@ -148,7 +148,7 @@ export default function Results() {
                                 options={{
                                     plugins: {
                                         legend: {
-                                            position: 'right' as const
+                                            position: 'bottom' as const
                                         },
                                         tooltip: {
                                             callbacks: {

@@ -8,12 +8,12 @@ export default function SafeConversionExplainer() {
             <CardHeader>
                 <CardTitle>How SAFE Notes Are Converted</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-6 px-40">
+            <CardContent className="space-y-6 px-4 sm:px-10 lg:px-40">
                 <p> 
                     Converting SAFE notes into equity during a priced round requires an <strong>iterative</strong> process since there is no closed-form solution.
                     The cap table is recalculated multiple times until share prices stabilize. Unless you have specific terms otherwise, the general flow and order of dilution is SAFE conversion, ESOP expansion, and then new investor allocation.
                 </p>
-      <ul className="list-decimal space-y-4">
+      <ul className="list-decimal space-y-4 overflow-x-auto">
       
           <Card className="p-4">
             <strong>Step 0: Initialize Variables</strong> 

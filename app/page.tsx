@@ -42,12 +42,12 @@ export default function CalculatorPage() {
         <CalculationProvider>
           <div className={`transition-opacity duration-200 ${isHydrated ? 'opacity-100' : 'opacity-0'}`}>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-5">
-                <TabsTrigger value="cap-table">Current Cap Table</TabsTrigger>
-                <TabsTrigger value="safe-notes">SAFE Notes</TabsTrigger>
-                <TabsTrigger value="new-round">New Priced Round</TabsTrigger>
-                <TabsTrigger value="results">Results</TabsTrigger>
-                <TabsTrigger value="explainer">Explainer</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 sm:grid-cols-5 h-auto">
+                <TabsTrigger value="cap-table" className="text-xs sm:text-sm">Cap Table</TabsTrigger>
+                <TabsTrigger value="safe-notes" className="text-xs sm:text-sm">SAFE Notes</TabsTrigger>
+                <TabsTrigger value="new-round" className="text-xs sm:text-sm">New Round</TabsTrigger>
+                <TabsTrigger value="results" className="text-xs sm:text-sm">Results</TabsTrigger>
+                <TabsTrigger value="explainer" className="text-xs sm:text-sm">Explainer</TabsTrigger>
               </TabsList>
               <TabsContent value="cap-table">
                 <CapTable />
