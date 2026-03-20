@@ -202,20 +202,22 @@ export default function NewRound() {
                     </div>
 
                 <div className="space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <h3 className="text-md">Investors</h3>
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                             <Button onClick={handleClearAll} size="sm" variant="outline">
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Clear All
+                            <span className="hidden sm:inline">Clear All</span>
+                            <span className="sm:hidden">Clear</span>
                         </Button>
                         <Button onClick={handleImportClick} size="sm" variant="outline">
                             <Upload className="mr-2 h-4 w-4" />
-                            Import CSV
+                            Import
                         </Button>
                         <Button onClick={handleDownloadCSV} size="sm" variant="outline">
                             <Download className="mr-2 h-4 w-4" />
-                            Download CSV
+                            <span className="hidden sm:inline">Download</span>
+                            <span className="sm:hidden">Export</span>
                         </Button>
                         <Button onClick={handleAdd} size="sm">
                             <Plus className="mr-2 h-4 w-4" />
